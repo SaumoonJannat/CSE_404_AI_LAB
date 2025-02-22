@@ -1,0 +1,98 @@
+/* Facts */
+
+/* Books and their authors */
+author('Harry Potter and the Sorcerer\'s Stone', 'J.K. Rowling').
+author('The Hobbit', 'J.R.R. Tolkien').
+author('The Da Vinci Code', 'Dan Brown').
+author('The Alchemist', 'Paulo Coelho').
+author('A Game of Thrones', 'George R.R. Martin').
+author('Murder on the Orient Express', 'Agatha Christie').
+author('The Great Gatsby', 'F. Scott Fitzgerald').
+author('To Kill a Mockingbird', 'Harper Lee').
+
+/* Books and their categories */
+category('Harry Potter and the Sorcerer\'s Stone', fantasy).
+category('The Hobbit', fantasy).
+category('The Da Vinci Code', thriller).
+category('The Alchemist', philosophy).
+category('A Game of Thrones', fantasy).
+category('Murder on the Orient Express', mystery).
+category('The Great Gatsby', fiction).
+category('To Kill a Mockingbird', fiction).
+
+/* Library members */
+member('Alice').
+member('Bob').
+member('Charlie').
+member('David').
+
+/* Book availability */
+available('The Hobbit').
+available('The Da Vinci Code').
+available('The Alchemist').
+available('A Game of Thrones').
+available('The Great Gatsby').
+
+/* Borrowed books and due dates */
+borrowed('Harry Potter and the Sorcerer\'s Stone', 'Alice', '2025-03-10').
+borrowed('Murder on the Orient Express', 'Bob', '2025-03-15').
+borrowed('To Kill a Mockingbird', 'Charlie', '2025-03-20').
+
+/* Rules */
+
+
+
+/* Check if a book is available */
+book_available(Book) :-
+    available(Book),
+    \+ borrowed(Book, _, _).
+
+/* Check if a person is a library member */
+is_member(Person) :-
+    member(Person).
+
+/* Find books by an author */
+books_by_author(Author, Book) :-
+    author(Book, Author).
+
+/* Find books in a category */
+books_in_category(Category, Book) :-
+    category(Book, Category).
+
+/* Who borrowed a book and when? */
+
+who_borrowed(Book, Person, Date) :-
+    borrowed(Book, Person, Date).
+
+/* Return a book */
+:- dynamic available/1.
+:- dynamic borrowed/3.
+
+return_book(Book, Person) :-
+    borrowed(Book, Person, _),
+    retract(borrowed(Book, Person, _)),
+    assert(available(Book)).
+
+/* Recommend books in the same category */
+recommend(Book, SuggestedBook) :-
+    category(Book, Category),
+    category(SuggestedBook, Category),
+    Book \== SuggestedBook.
+
+/* Query Examples:
+?- book_available('The Hobbit').  % Check if a book is available
+?- books_by_author('J.K. Rowling', Book).  % Find books by J.K. Rowling
+?-  books_by_author('Harper Lee', Book).
+?- book_available('To Kill a Mockingbird'). 
+?- who_borrowed('To Kill a Mockingbird', Person, Date). 
+?- books_in_category(fantasy, Book). % Find all fantasy books
+?- books_in_category( fiction, Book). 
+books_in_category(philosophy, Book). 
+?- who_borrowed('Murder on the Orient Express', Person, Date).  % Find who borrowed it & when
+?- return_book('To Kill a Mockingbird', 'Charlie').  % Return a book
+?- recommend('The Hobbit', Suggestion).  % Get a book recommendation
+?- book_available('A Game of Thrones').
+?- book_available('Harry Potter and the Sorcerer\'s Stone').
+?- who_borrowed('Harry Potter and the Sorcerer\'s Stone', Person, Date). 
+
+*/
